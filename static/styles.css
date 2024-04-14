@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+
+/* ------- General Styling -------- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px; 
+    background-color: #f0f0f0;  /* Default light background */
+    color: #333;                /* Default text color */
+    transition: background-color 0.5s, color 0.5s; 
+}
+
+h1 { 
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ------- Dark Mode -------- */
+body.dark { 
+    background-color: #2d3740;  
+    color: #fff; 
+}
+
+/* ------- Form Styling (index.html) -------- */
+form {
+    margin: 30px auto;  
+    width: 400px; 
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="text"] {
+    width: calc(100% - 100px); 
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button[type="submit"] {
+    background-color: #007bff; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pagination {
+    text-align: center;
+    margin: 20px 0; /* Spacing above and below */
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 3px; /* Spacing between links */
+    border: 1px solid #ddd; 
+    border-radius: 3px; 
+    text-decoration: none; 
+    color: #333; 
+}
+
+.pagination a.active { 
+    background-color: #007bff; 
+    color: white; 
+}
+
+/* ... your existing styles ... */
+
+/* Box Styling for Search Results */
+.search-result {
+    margin-bottom: 20px;
+    border: 1px solid #ddd; /* Border for the box */
+    padding: 20px;          /* Padding within the box */
+    border-radius: 5px;     /* Slightly rounded corners */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+
+/* Bigger and Centered Download Button */
+.download-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;   /* Increased padding */
+    border: none;
+    border-radius: 5px;   /* Slightly rounded corners */
+    cursor: pointer;
+    display: block;       /* Makes the button a block-level element */
+    margin: 10px auto;    /* Centers the button horizontally */
+}
+
+.download-button:hover {
+    background-color: #0069d9; 
+}
+/* ... your existing styles ... */
+
+/* Hover effect for the abstract within the result box */
+.search-result .highlight-text:hover { 
+    background-color: #f0f0f0;  /* A light background on hover */
+    cursor: pointer;            /* Optional: Change cursor to a pointer  */
+}
+
+/* Hover effect for the download button with a more pronounced change */
+.download-button:hover {
+    background-color: #0056b3;  /* A darker shade of blue on hover */
+}
+.search-result .highlight-text:hover {
+    background-color: #f0f0f0; 
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smoothly transition the color */
+}
+.arxiv-button {
+    background-color: #4CAF50; /* Example: Green color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px; /* Add spacing between the buttons */
+}
+
+.arxiv-button:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+}
+
+/* ------- Search Result Styling (results.html)  -------- */
+/* TODO: We'll design these styles based on your layout choice  */
