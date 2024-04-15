@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>arXiv Search</title>
+</head>
+<body>
+    <button id="dark-mode-toggle" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-block">Dark Mode</button>
+
+    <h1>arXiv Search</h1>
+
+    <form method="POST">
+        <input type="text" name="query" placeholder="Enter your search query">
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="results-container">
+        <!-- Search results will be loaded here -->
+        {% for paper in papers %}
+        <div class="search-result">
+            <h2>{{ paper['title'] }}</h2>
+            <p><strong>Authors:</strong>
+                {% for author in paper['authors'] %}
+                <a href="#" class="author-link" data-author-name="{{ author }}">{{ author }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <p><strong>PDF:</strong>
+                <button class="download-button" data-pdf-url="{{ paper['pdf_url'] }}">Download</button>
+            </p>
+            <p>
+                <button class="summary-button" data-pdf-url="{{ paper['pdf_url'] }}">
+                    Summarize
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </button>
+                <button class="arxiv-button" data-pdf-url="{{ paper['pdf_url'] }}">arXiv Page</button>
+            </p>
+            <div id="summary-{{paper['arxiv_url']}}" class="summary-container"></div>
+            <p class="highlight-text"><strong>Abstract:</strong> {{ paper['abstract'] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% for page_num in pagination_links %}
+        <a href="{{ page_num }}" class="page-link" data-page="{{ page_num }}">{{ page_num }}</a>
+        {% endfor %}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
