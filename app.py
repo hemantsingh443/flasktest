@@ -191,10 +191,23 @@ def search_arxiv_by_author(author_name):
 
 @app.route('/download', methods=['POST'])
 def download():
-    data = request.get_json()
-    pdf_url = data.get('pdf_url')
+    data = request.get_json()  
+    pdf_url = data.get('pdf_url')  
     if not pdf_url:
-        return jsonify({'error': 'Missing pdf_url in request data'}), 
+        return jsonify({'error': 'Missing pdf_url in request data'}), 400
+    try:
+        with TemporaryDirectory() as temp_dir:
+            response = requests.get(pdf_url)
+            temp_pdf_path = os.path.join(temp_dir, 'temp.pdf')
+            with open(temp_pdf_path, 'wb') as pdf_file:  
+                pdf_file.write(response.content)
+            filename = 'downloaded_paper.pdf'
+            response = Response(open(temp_pdf_path, 'rb').read(), mimetype='application/pdf')
+            response.headers['Content-Disposition'] = f'attachment; filename={filename}' 
+            return response
+    except Exception as e:
+
+        return jsonify({'error': str(e)}), 500 
 
 @app.route("/summarize_pdf", methods=["POST"])
 def summarize_pdf():
