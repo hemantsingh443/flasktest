@@ -3,7 +3,7 @@ import os
 import arxiv
 from tempfile import TemporaryDirectory
 import requests
-from flask import Flask, Response, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request, url_for
 from tempfile import TemporaryDirectory
 from pdfminer.high_level import extract_text
 import torch
@@ -152,19 +152,19 @@ def search():
     # Generate pagination links
     pagination_links = []
     for page_num in range(1, total_pages + 1):
-        active_class = "active" if page_num == page else ""
-        pagination_links.append(f'{page_num}')
+        url = url_for('search', query=search_query, page=page_num) 
+        pagination_links.append({'page_num': page_num, 'url': url})
 
     return render_template(
         "combined.html",
         papers=papers,
-        pagination_links=pagination_links,
-        query=search_query
+        pagination_links=pagination_links,  
+        query=search_query  # Make sure you're passing the query
     )
 
 
 def generate_pagination_link(page_num, query):
-    base_url =base_url = 'http://127.0.0.1:5000/search'   # Replace with your actual base URL
+    base_url = url_for('search')  # Use url_for to get the correct endpoint
     params = {'query': query, 'page': page_num}
     return f"{base_url}?{urllib.parse.urlencode(params)}"
 
@@ -231,6 +231,11 @@ def get_summary():
     except FileNotFoundError:
         return jsonify(error="Summary file not found."), 404
 
+
+@app.route("/author/<author_name>")
+def author_search(author_name):
+    papers = search_arxiv_by_author(author_name)
+    return render_template("combined.html", papers=papers, query=f'au:"{author_name}"') 
 
 if __name__ == "__main__":
     app.run(debug=True)
