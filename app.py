@@ -84,11 +84,12 @@ def iterative_summarization(pdf_text, chunk_size=1000, output_file="summary.txt"
                 # You might need to adjust how states are reset
             else:
                 raise ValueError("Invalid reset_method. Choose 'reload' or 'hidden_state'")
-            chunk_summary = summarize_chunk(chunk)
+            chunk_summary = summarize_chunk(chunk)   
+            print(f"Chunk Summary: {chunk_summary}\n")  
+            yield chunk_summary + "\n"
             summary += chunk_summary + "\n"  # Add chunk summary to the string
             start_index = end_index
-    with open(output_file, "w", encoding='utf-8') as f:
-        f.write(summary)
+    
 
 
 # Character-Aware Summarization Logic
@@ -100,20 +101,13 @@ def summarize_chunk(text, max_length=200):
 
 
 def generate_pdf_summary(pdf_url):
-    try:
-        pdf_content = download_pdf(pdf_url)  # Get PDF content as bytes
-        pdf_text = extract_pdf_text(pdf_content)  # Pass content to extractor
-        iterative_summarization(pdf_text)
-        with open("summary.txt", "r") as f:
-            summary = f.read()
-        return jsonify(summary=summary)
-    except requests.exceptions.RequestException as e:
-        return jsonify(error=f"Error downloading PDF: {str(e)}"), 500
-    except FileNotFoundError:
-        return jsonify(error="Error: Downloaded PDF not found."), 500
-    except Exception as e:
-        return jsonify(error=f"Error generating summary: {str(e)}"), 500
-
+        pdf_content = download_pdf(pdf_url)
+        pdf_text = extract_pdf_text(pdf_content)
+        def generate_chunks():
+            for chunk_summary in iterative_summarization(pdf_text):
+                yield chunk_summary + "\n"
+        return Response(generate_chunks(), mimetype='text/plain')
+  
 
 app = Flask(__name__)
 
@@ -216,20 +210,10 @@ def summarize_pdf():
     if not pdf_url:
         return jsonify(error="Please provide a PDF URL."), 400
     try:
-        summary = generate_pdf_summary(pdf_url)
-        return jsonify(summary=summary)
+        return generate_pdf_summary(pdf_url)  # Return Response directly
     except Exception as e:
         return jsonify(error=f"Error generating summary: {str(e)}"), 500
 
-
-@app.route('/get_summary')
-def get_summary():
-    try:
-        with open("summary.txt", "r", encoding='utf-8') as f:
-            summary_text = f.read()
-        return jsonify(summary=summary_text)
-    except FileNotFoundError:
-        return jsonify(error="Summary file not found."), 404
 
 
 @app.route("/author/<author_name>")
