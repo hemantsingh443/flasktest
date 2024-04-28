@@ -126,30 +126,19 @@ button[type="submit"] {
 }
 
 .progress-bar {
-    width: 100%;
-    height: 5px;
-    background-color: #e0e0e0;
-    border-radius: 3px;
-    overflow: hidden;
+  width: 100%;
+  height: 5px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .progress-bar-fill {
-    height: 100%;
-    background-color: #007bff;
-    width: 0%;  /* Initial width */
-    transition: width 0.5s ease-in-out;  /* Smooth transition */
-} 
-
-.pagination a.active {
-    background-color: #007bff; /* Blue background */
-    color: #fff;
-    font-weight: bold;
-    text-decoration: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }    
-
-
-/* ... (Existing styles) ... */
+  height: 100%;
+  background-color: #007bff;
+  width: 0%; /* Initial width */
+  transition: width 0.5s ease-in-out; /* Smooth transition */
+}
 
 #main-container {
     display: flex;
@@ -171,10 +160,6 @@ button[type="submit"] {
   }  
 
   /* ... (Existing styles) ... */
-  #author-results {
-    background-color: #f8f9fa; /* Light gray background */
-  } 
-
   #author-results {
     background-image: linear-gradient(to bottom, #f8f9fa, #e2e6ea); /* Light gray gradient */
   }
@@ -198,6 +183,30 @@ button[type="submit"] {
 
 #author-results #dark-mode-toggle, #author-results h1 {
     display: none; /* Hide the button and heading */
-  }
+  }  
+
+
+.summary-container {
+  overflow-y: auto;
+  max-height: 200px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f8f9fa; /* Light background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.summary-chunk {
+  margin-bottom: 10px;
+  line-height: 1.5; /* Adjust line spacing as needed */
+  animation: fadeIn 0.5s ease-in-out; /* Fade in animation */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+  
 /* ------- Search Result Styling (results.html)  -------- */
 /* TODO: We'll design these styles based on your layout choice  */
