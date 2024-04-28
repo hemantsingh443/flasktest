@@ -44,7 +44,8 @@
           </button>
           <button class="arxiv-button" data-pdf-url="{{ paper['pdf_url'] }}">arXiv Page</button>
         </p>
-        <div id="summary-{{paper['arxiv_url']}}" class="summary-container"></div>
+        <div id="summary-{{ paper['pdf_url'] }}" class="summary-container">
+          <span class="loading-indicator"></span></div>
         <p class="highlight-text">
           <strong>Abstract:</strong> {{ paper['abstract'] }}
         </p>
