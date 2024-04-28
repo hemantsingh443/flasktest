@@ -112,59 +112,60 @@ function updateSearchResults(htmlContent) {
   
 // Function to summarize PDF
 function summarizePdf(pdfUrl) {
-  fetch('/summarize_pdf', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ pdf_url: pdfUrl }) // Send as JSON data
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Summarization failed!');
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.error) {
-      // Display error message from the server
-      alert('Error: ' + data.error); // Example error display
-    } else {
-      const summaryText = data.summary;
-      updateSummary(pdfUrl, summaryText);
-    }
-  })
-  .catch(error => console.error('Error:', error));
-}
-
-let intervalCounter = 0; // Counter for unique IDs
-const intervalIds = {}; // Store interval IDs
-
-// Function to update summary elements
-function updateSummary(pdfUrl, summary) {
   const summaryElement = document.getElementById(`summary-${pdfUrl}`);
+  console.log('Summary element:', summaryElement);
+  
   if (summaryElement) {
-    summaryElement.textContent = summary;
+      summaryElement.textContent = 'Summarizing...';
+  } else {
+      console.error('Element not found:', `summary-${pdfUrl}`);
+      return; // Exit if the element is not found
   }
-}
 
-// Function to display summary
-function displaySummary() {
-  fetch('/get_summary')
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        // Handle error (e.g., display an error message)
-        console.error("Error:", data.error);
-      } else {
-        const summaryText = data.summary;
-        const summaryElement = document.getElementById("summary-container"); // Assuming you have an element with this ID
-        summaryElement.textContent = summaryText;
-      }
-    })
-    .catch(error => console.error("Error fetching summary:", error));
-}
+  fetch('/summarize_pdf', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ pdf_url: pdfUrl }),
+  })
+      .then(response => response.body.getReader()) // Get a reader for the stream
+      .then(reader => {
+          let decoder = new TextDecoder();
+          let summaryText = "";
 
+          function readChunk({ done, value }) {
+              if (done) {
+                  summaryElement.textContent = summaryText; // Set final text
+                  return;
+              }
+
+              summaryText += decoder.decode(value, { stream: true });
+              
+              // Create a chunk element and append
+              let chunkElement = document.createElement('div');
+              chunkElement.className = 'summary-chunk';
+              chunkElement.textContent = decoder.decode(value, { stream: true });
+              summaryElement.appendChild(chunkElement);
+
+              // Read the next chunk
+              reader.read().then(readChunk);
+          }
+
+          reader.read().then(readChunk); // Start reading chunks
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          summaryElement.textContent = 'An error occurred during summarization.';
+      });
+}
+// Attach event listeners to summary buttons (using event delegation)
+document.addEventListener('click', function(event) {
+  if (event.target.classList.contains('summary-button')) {
+    const pdfUrl = event.target.dataset.pdfUrl;
+    summarizePdf(pdfUrl);
+  }
+});
 // Function to update pagination links (styling only)
 function updatePaginationLinks() {
   const paginationLinks = document.querySelectorAll('.page-link');
