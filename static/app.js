@@ -10,6 +10,9 @@ highlightElements.forEach(element => {
   element.addEventListener('click', () => {
     element.classList.toggle('highlighted');
   });
+});  
+window.addEventListener('load', () => {
+  attachButtonEvents();
 });
 
 // Logic for download button
