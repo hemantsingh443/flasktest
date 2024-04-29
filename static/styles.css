@@ -1,130 +1,149 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
 
 /* ------- General Styling -------- */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px; 
-    background-color: #f0f0f0;  /* Default light background */
-    color: #333;                /* Default text color */
-    transition: background-color 0.5s, color 0.5s; 
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f0f0f0; /* Default light background */
+  color: white;           /* Set text color to white */
+  font-weight: bold;     /* Make text bold */
+  transition: background-color 0.5s, color 0.5s;
+  position: relative;
 }
 
-h1 { 
-    text-align: center;
-    margin-bottom: 20px;
+body {
+  /* ... other styles ... */
+  background-image: url("Gemini_Generated_Image_tz9kvgtz9kvgtz9k.jpg");   
+  backdrop-filter: blur(5px);
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: background-color 0.5s, color 0.5s, background-image 0.5s;
+}
+
+body.dark {
+  /* ... other styles ... */
+  background-image: url("Gemini_Generated_Image_n9b3sln9b3sln9b3.jpg");  
+  backdrop-filter: blur(2px);
+}
+
+#author-results {
+  /* ... other styles ... */
+  background-image: url("Gemini_Generated_Image_tz9kvhtz9kvhtz9k.jpg"); 
+  backdrop-filter: blur(10px);/* If different */
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: background-color 0.5s, color 0.5s, background-image 0.5s; 
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* ------- Dark Mode -------- */
-body.dark { 
-    background-color: #2d3740;  
-    color: #fff; 
+body.dark {
+  background-color: #2d3740;
+  color: #fff;
 }
 
-/* ------- Form Styling (index.html) -------- */
+/* ------- Form Styling (index.html & author-results) -------- */
 form {
-    margin: 30px auto;  
-    width: 400px; 
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  margin: 30px auto;
+  width: 400px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 input[type="text"] {
-    width: calc(100% - 100px); 
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+  width: calc(100% - 100px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }
 
 button[type="submit"] {
-    background-color: #007bff; 
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 3px;
-    cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
+/* ------- Pagination Styling -------- */
 .pagination {
-    text-align: center;
-    margin: 20px 0; /* Spacing above and below */
+  text-align: center;
+  margin: 20px 0;
 }
 
 .pagination a {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 0 3px; /* Spacing between links */
-    border: 1px solid #ddd; 
-    border-radius: 3px; 
-    text-decoration: none; 
-    color: #333; 
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 0 3px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #333;
 }
 
-.pagination a.active { 
-    background-color: #007bff; 
-    color: white; 
+.pagination a.active {
+  background-color: #007bff;
+  color: white;
 }
 
-/* ... your existing styles ... */
-
-/* Box Styling for Search Results */
+/* ------- Search Result Styling (results.html) -------- */
 .search-result {
-    margin-bottom: 20px;
-    border: 1px solid #ddd; /* Border for the box */
-    padding: 20px;          /* Padding within the box */
-    border-radius: 5px;     /* Slightly rounded corners */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Bigger and Centered Download Button */
-.download-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;   /* Increased padding */
-    border: none;
-    border-radius: 5px;   /* Slightly rounded corners */
-    cursor: pointer;
-    display: block;       /* Makes the button a block-level element */
-    margin: 10px auto;    /* Centers the button horizontally */
+/* Hover Highlight for Search Result */
+.search-result:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.download-button:hover {
-    background-color: #0069d9; 
-}
-/* ... your existing styles ... */
-
-/* Hover effect for the abstract within the result box */
-.search-result .highlight-text:hover { 
-    background-color: #f0f0f0;  /* A light background on hover */
-    cursor: pointer;            /* Optional: Change cursor to a pointer  */
-}
-
-/* Hover effect for the download button with a more pronounced change */
-.download-button:hover {
-    background-color: #0056b3;  /* A darker shade of blue on hover */
-}
+/* Hover effect for highlighted text */
 .search-result .highlight-text:hover {
-    background-color: #f0f0f0; 
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smoothly transition the color */
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+/* ------- Button Styles -------- */
+.download-button, .arxiv-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  margin-left: 10px;
+}
+
+.download-button {
+  background-color: #007bff;
+  display: block;
+  margin: 10px auto;
+}
+
+.download-button:hover {
+  background-color: #0056b3;
+}
+
 .arxiv-button {
-    background-color: #4CAF50; /* Example: Green color */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px; /* Add spacing between the buttons */
+  background-color: #4CAF50;
 }
 
 .arxiv-button:hover {
-    background-color: #45a049; /* Slightly darker green on hover */
+  background-color: #45a049;
 }
 
+/* ------- Progress Bar Styling -------- */ 
 .progress-bar {
   width: 100%;
   height: 5px;
@@ -136,77 +155,87 @@ button[type="submit"] {
 .progress-bar-fill {
   height: 100%;
   background-color: #007bff;
-  width: 0%; /* Initial width */
-  transition: width 0.5s ease-in-out; /* Smooth transition */
+  width: 0%;
+  transition: width 0.5s ease-in-out;
 }
 
+/* ------- Main Container and Layout -------- */
 #main-container {
-    display: flex;
-    height: 80vh; /* Adjust height as needed */
-  }
-  
-  #search-results {
-    flex: 1; /* Initially takes up full space */
-    overflow-y: auto; /* Enable scroll just in case */
-    padding: 20px;
-  }
-  
-  #author-results {
-    display: none; /* Initially hidden */
-    flex: 1; /* Will take up half the space when shown */
-    overflow-y: auto; /* Enable scroll */
-    padding: 20px;
-    border-left: 1px solid #ddd; /* Optional border */
-  }  
+  display: flex;
+  height: 80vh;
+}
 
-  /* ... (Existing styles) ... */
-  #author-results {
-    background-image: linear-gradient(to bottom, #f8f9fa, #e2e6ea); /* Light gray gradient */
-  }
-#author-results form {
-    display: none; /* Hide the search bar */
-  }  
+#search-results, #author-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
 
-  #author-results {
-    background-color: #f0f0f0; /* Base background color */
-    color: #444; /* Text color */
-  }
-  
-  #author-results h2 {
-    color: #333; /* Heading color */
-  }
-  
-  #author-results a {
-    color: #007bff; /* Link color */
-  }
-  
+#author-results {
+  display: none;
+  border-left: 1px solid #ddd;
+  background-color: #f0f0f0;
+  color: white; 
+}
 
-#author-results #dark-mode-toggle, #author-results h1 {
-    display: none; /* Hide the button and heading */
-  }  
+#author-results * {
+  font-weight: bold;
+}
 
+#author-results form, #author-results #dark-mode-toggle, #author-results h1 {
+  display: none; 
+}
 
+/* ------- Summary Container Styling -------- */
 .summary-container {
   overflow-y: auto;
   max-height: 200px;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #f8f9fa; /* Light background */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  color: black;
+  background-color: #f8f9fa; 
 }
 
+
+.summary-container .highlight-text {
+  background-color: #ffff00;  /* Adjust as needed */
+}
 .summary-chunk {
   margin-bottom: 10px;
-  line-height: 1.5; /* Adjust line spacing as needed */
-  animation: fadeIn 0.5s ease-in-out; /* Fade in animation */
+  line-height: 1.5;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to { opacity: 1; } 
 }
 
-  
-/* ------- Search Result Styling (results.html)  -------- */
-/* TODO: We'll design these styles based on your layout choice  */
+/* ------- Media Queries for Responsiveness -------- */
+@media (max-width: 768px) {
+  #main-container {
+    flex-direction: column;
+  }
+  #search-results, #author-results {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-result {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+} 
+
+#author-results {
+  /* ... other styles ... */
+  background-attachment: scroll; /* or fixed */
+}  
+
+.search-result:hover .highlight-text {
+  font-weight: bold;
+  color: black;
+}
