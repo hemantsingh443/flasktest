@@ -12,9 +12,8 @@ highlightElements.forEach(element => {
   });
 });  
 window.addEventListener('load', () => {
-  attachButtonEvents();
+  attachButtonEvents(); // Attach listeners to initially loaded buttons
 });
-
 // Logic for download button
 function attachButtonEvents() {
     const downloadButtons = document.querySelectorAll('.download-button');
@@ -113,6 +112,14 @@ function updateSearchResults(htmlContent) {
       });
   });
   
+ // Attach event listeners to summary buttons (using event delegation)
+document.addEventListener('click', function(event) {
+  if (event.target.classList.contains('summary-button')) {
+    const pdfUrl = event.target.dataset.pdfUrl;
+    summarizePdf(pdfUrl);
+  }
+}); 
+
 // Function to summarize PDF
 function summarizePdf(pdfUrl) {
   const summaryElement = document.getElementById(`summary-${pdfUrl}`);
@@ -162,13 +169,7 @@ function summarizePdf(pdfUrl) {
           summaryElement.textContent = 'An error occurred during summarization.';
       });
 }
-// Attach event listeners to summary buttons (using event delegation)
-document.addEventListener('click', function(event) {
-  if (event.target.classList.contains('summary-button')) {
-    const pdfUrl = event.target.dataset.pdfUrl;
-    summarizePdf(pdfUrl);
-  }
-});
+
 // Function to update pagination links (styling only)
 function updatePaginationLinks() {
   const paginationLinks = document.querySelectorAll('.page-link');
@@ -189,7 +190,9 @@ function updatePaginationLinks() {
       currentPageLink.classList.add('active');
     }
   }
-}  
+}   
 
 
-  
+
+
+
