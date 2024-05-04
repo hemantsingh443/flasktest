@@ -3,7 +3,6 @@
 
 <head>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
-
   <title>arXiv Search</title>
 </head>
  
@@ -11,11 +10,16 @@
   <button id="dark-mode-toggle" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-block">
     Dark Mode
   </button>    
-
-
-
+  
+  {% if current_user.is_authenticated %}
+  <p>Logged in as {{ current_user.username }} | <a href="{{ url_for('logout') }}">Logout</a> | 
+     <a href="{{ url_for('favorites') }}">Favorites</a></p>
+{% else %}
+  <p><a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('signup') }}">Signup</a></p>
+{% endif %}
+  <div class="search-result">
+  </div>
   <h1>arXiv Search</h1>
-
   <form method="POST">
     <input type="text" name="query" placeholder="Enter your search query">
     <button type="submit">Search</button>
@@ -46,7 +50,14 @@
               <div class="progress-bar-fill"></div>
             </div>
           </button>
-          <button class="arxiv-button" data-pdf-url="{{ paper['pdf_url'] }}">arXiv Page</button>
+          <button class="arxiv-button" data-pdf-url="{{ paper['pdf_url'] }}">arXiv Page</button> 
+          <button class="favorite-button" data-paper-id="{{ paper['arxiv_url'].split('/')[-1] }}">
+            {% if paper['is_favorite'] %}
+                Remove from Favorites
+            {% else %}
+                Add to Favorites
+            {% endif %}
+        </button>
         </p>
         <div id="summary-{{ paper['pdf_url'] }}" class="summary-container">
           <span class="loading-indicator"></span></div>
@@ -67,9 +78,10 @@
     <a href="{{ link['url'] }}" class="page-link{% if link['page_num'] == page_num %} active{% endif %}"
       data-page="{{ link['page_num'] }}">{{ link['page_num'] }}</a>
     {% endfor %}
-  </div> 
+  </div>  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script src="{{ url_for('static', filename='app.js') }}"></script>
-
+  <script src="{{ url_for('static', filename='favorites.js') }}"></script>
 </body>
 </html>
