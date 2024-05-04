@@ -1,9 +1,10 @@
-import itertools
+
 import os
 import arxiv
 from tempfile import TemporaryDirectory
+from flask_login import current_user, login_required, login_user, logout_user
 import requests
-from flask import Flask, Response, jsonify, render_template, request, url_for
+from flask import Flask, Response, jsonify, redirect, render_template, request, url_for
 from tempfile import TemporaryDirectory
 from pdfminer.high_level import extract_text
 import torch
@@ -18,7 +19,31 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 import os
-import urllib
+import urllib 
+import db 
+from flask_caching import Cache  
+from flask_login import LoginManager  
+from db import get_user_by_username, get_user_by_id, add_user, get_papers_by_ids, User, create_tables  
+from functools import wraps
+
+# Create a cache instance
+cache = Cache(config={'CACHE_TYPE': 'simple'}) 
+
+app = Flask(__name__) 
+cache.init_app(app)
+app.secret_key = '12345678'  # Replace with a strong secret key
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+create_tables()  # Create database tables
+
+@login_manager.user_loader
+def load_user(user_id):
+    return get_user_by_id(user_id)  # Replace with a strong, random key
+
+
 
 current_directory = os.getcwd()
 print("Current working directory:", current_directory)
@@ -26,7 +51,15 @@ print("Current working directory:", current_directory)
 if torch.cuda.is_available():
     print("CUDA is available! GPU will be used.")
 else:
-    print("CUDA is not available. CPU will be used.")
+    print("CUDA is not available. CPU will be used.") 
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 def extract_pdf_text(pdf_content):
@@ -109,10 +142,9 @@ def generate_pdf_summary(pdf_url):
         return Response(generate_chunks(), mimetype='text/plain')
   
 
-app = Flask(__name__)
 
-
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"]) 
+@login_required 
 def search():
     if request.method == "POST":
         search_query = request.form["query"]
@@ -136,7 +168,7 @@ def search():
                 'abstract': paper.summary,
                 'pdf_url': paper.pdf_url,
                 'arxiv_url': paper.entry_id,
-                # ... add other paper details as needed ...
+                "is_favorite": paper.entry_id in current_user.get_favorite_paper_ids(),
             } for paper in results[start_index:end_index]
         ]
     else:
@@ -153,8 +185,11 @@ def search():
         "combined.html",
         papers=papers,
         pagination_links=pagination_links,  
-        query=search_query  # Make sure you're passing the query
-    )
+        query=search_query,
+        current_user=current_user # Make sure you're passing the query
+    ) 
+
+
 
 
 def generate_pagination_link(page_num, query):
@@ -219,7 +254,75 @@ def summarize_pdf():
 @app.route("/author/<author_name>")
 def author_search(author_name):
     papers = search_arxiv_by_author(author_name)
-    return render_template("combined.html", papers=papers, query=f'au:"{author_name}"') 
+    return render_template("combined.html", papers=papers, query=f'au:"{author_name}"')   
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = db.get_user_by_username(username)
+        if user and user.password == password:  # In a real app, you would hash and compare passwords
+            login_user(user)
+            return redirect(url_for('search'))  # Redirect to the main page after login
+        else:
+            # Handle invalid login
+            pass
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        # ... (add validation for username and password)
+        db.add_user(username, password)
+        return redirect(url_for('login'))  # Redirect to login after signup
+    return render_template('signup.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login')) 
+
+@app.route('/favorites')
+@login_required
+def favorites():
+    favorite_paper_ids = current_user.get_favorite_paper_ids()
+    favorite_papers = get_papers_by_ids(favorite_paper_ids)  # Get full paper details
+    return render_template('favorites.html', papers=favorite_papers)
+
+@app.route('/add_favorite', methods=['POST'])
+@login_required
+def add_favorite():
+    paper_id = request.json.get('paper_id') 
+    if not paper_id:
+        return jsonify(message='Missing paper_id'), 400  
+    current_user.add_favorite(paper_id) 
+    return jsonify(message='Paper added to favorites')
+
+@app.route('/remove_favorite', methods=['POST'])
+@login_required
+def remove_favorite():
+    paper_id = request.json.get('paper_id') 
+    if not paper_id:
+        return jsonify(message='Missing paper_id'), 400
+
+    try:
+        current_user.remove_favorite(paper_id)
+        
+        # Invalidate cache for favorites list (if using caching)
+        cache.delete_memoized(current_user.get_favorite_paper_ids)  
+        
+        return jsonify(message='Paper removed from favorites')
+    except Exception as e:
+        # Log the error for debugging purposes
+        print(f"Error removing favorite: {e}")
+        return jsonify(message='An error occurred while removing the favorite.'), 500
+
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)  
