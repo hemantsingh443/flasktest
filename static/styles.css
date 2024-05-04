@@ -239,3 +239,7 @@ button[type="submit"] {
   font-weight: bold;
   color: black;
 }
+.search-result p {
+  display: flex;  /* Use flexbox for horizontal layout */
+  gap: 10px;      /* Add spacing between buttons */
+}
