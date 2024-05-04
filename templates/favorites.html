@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Favorites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
+</head>
+<body>
+    <h1>My Favorite Papers</h1>
+    <div id="favorites-container">
+        {% for paper in papers %}
+        <div class="search-result">
+            <h2>{{ paper['title'] }}</h2>
+            <p class="highlight-text"></p>  
+            <p>
+                <strong>Authors:</strong> 
+                {% for author in paper['authors'] %}
+                    <a href="{{ url_for('author_search', author_name=author) }}" class="author-link" 
+                       data-author-name="{{ author }}">{{ author }}</a>
+                {% endfor %}  
+            </p>
+
+            <p>
+                <button class="summary-button" data-pdf-url="{{ paper['pdf_url'] }}">
+                    Summarize
+                </button>
+                <button class="arxiv-button" data-pdf-url="{{ paper['pdf_url'] }}">arXiv Page</button> 
+                <button class="download-button" data-pdf-url="{{ paper['pdf_url'] }}">Download</button>
+                <button class="favorite-button" data-paper-id="{{ paper['arxiv_url'].split('/')[-1] }}">
+                    Remove from Favorites 
+                </button> 
+            </p>
+            <div id="summary-{{ paper['pdf_url'] }}" class="summary-container">
+                <span class="loading-indicator"></span>
+            </div>
+            <p class="highlight-text">
+                <strong>Abstract:</strong> {{ paper['abstract'] }}
+            </p>
+        </div>
+        {% endfor %}
+    </div> 
+    <script src="{{ url_for('static', filename='app.js') }}"></script>  
+    <script src="{{ url_for('static', filename='favorites.js') }}"></script> 
+
+</body>
+</html>
